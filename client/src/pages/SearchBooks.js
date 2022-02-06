@@ -4,6 +4,12 @@ import { Jumbotron, Container, Col, Form, Button, Card, CardColumns } from 'reac
 import Auth from '../utils/auth';
 import { saveBook, searchGoogleBooks } from '../utils/API';
 import { saveBookIds, getSavedBookIds } from '../utils/localStorage';
+//apollo imports, get rid of the above api calls
+import { useMutation } from '@apollo/client';
+import { SAVE_BOOK} from '../utils/mutations';
+
+const [saveBook, {error}] = useMutation(SAVE_BOOK);
+
 
 const SearchBooks = () => {
   // create state for holding returned google api data
@@ -64,10 +70,16 @@ const SearchBooks = () => {
       return false;
     }
 
-    try {
-      const response = await saveBook(bookToSave, token);
 
-      if (!response.ok) {
+
+    try {
+      //const response = await saveBook(bookToSave, token);
+      const { data } = await saveBook({
+        variables: { bookToSave }
+      });
+      //do i use input? or bookToSave?
+
+      if (error) {
         throw new Error('something went wrong!');
       }
 

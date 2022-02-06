@@ -5,8 +5,8 @@ mutation login($email: String!, $password: String!) {
         login(email: $email, password: $password) {
             token 
             user {
-            _id
-            username
+                _id
+                username
             }
         }
 }
@@ -15,21 +15,45 @@ mutation login($email: String!, $password: String!) {
 export const ADD_USER = qgl`
 mutation createUser ($username : String!, $email,: String! $password: String!){
             createUser(username :$username , email:$email, password:$password){
-                    token
-                    user{
-                        _id
-                        username
-                        email
+                token
+                user{
+                    _id
+                    username
+                    email
   
-                    }
                 }
+            }
 }
 `;
 
 export const SAVE_BOOK = gql`
-
+mutation saveBook($input: BookInput) {
+            saveBook(input: $input) {
+                _id
+                savedBooks {
+                    bookId
+                    authors
+                    description
+                    title
+                    image
+                    link
+                }
+            }
+  }
 `;
 
 export const REMOVE_BOOK = gql`
-
+mutation deleteBook($bookId: String!) {
+        deleteBook(bookId: $bookId) {
+            _id
+            savedBooks {
+                bookId
+                authors
+                description
+                title
+                image
+                link
+            }
+        }
+  }
 `;

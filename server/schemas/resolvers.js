@@ -4,25 +4,13 @@ const { User } = require('../models');
 
 const resolvers = {
     Query: {
-        getSingleUser: async (parent, {userId}) => {
-          return User.findOne({ _id: userId });
-        },
-
-        users: async ()=>{
-          return User.find({});
+      me: async (parent, args, context) => {
+        if (context.user) {
+          return User.findOne({ _id: context.user._id }).populate('savedBooks');
         }
-      /*
-        getSingleUser: async({ user = null, params }, res) =>{
-            const foundUser = await User.findOne({
-                $or: [{ _id: user ? user._id : params.id }, { username: params.username }],
-              });
-          
-              if (!foundUser) {
-                return res.status(400).json({ message: 'Cannot find a user with this id!' });
-              }
-          
-              res.json(foundUser);
-        }*/
+        throw new AuthenticationError('You need to be logged in!');
+      }
+      
     },
 
     Mutation: {
@@ -51,12 +39,14 @@ const resolvers = {
             const token = signToken(user);
             return { token, user };
         },
-        saveBook: async(parent, {input}, context) =>{
+        saveBook: async(parent, {bookToSave}, context) =>{
             
             if(context.user){
-              const updatedUser = await User.findOneAndUpdate(
+              console.log(context.user);
+              console.log(context.user._id);
+              return User.findOneAndUpdate(
                 { _id: context.user._id },
-                { $addToSet: { savedBooks: input } },
+                { $addToSet: { savedBooks: bookToSave } },
                 { new: true, runValidators: true }
               );
             }

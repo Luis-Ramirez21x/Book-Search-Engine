@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Form, Button, Alert } from 'react-bootstrap';
 
-import { createUser } from '../utils/API';
+
 import Auth from '../utils/auth';
 
 //apollo imports 
@@ -37,8 +37,8 @@ const SignupForm = () => {
       const { data } = await addUser({
         variables: { ...userFormData },
       });
-
-      Auth.login(data.addUser.token);;
+      console.log(data);
+      Auth.login(data.createUser.token);;
       } catch (e) {
         console.error(e);
         setShowAlert(true);

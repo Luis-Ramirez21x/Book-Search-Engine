@@ -14,12 +14,18 @@ import { useMutation } from '@apollo/client';
 
 
 const SavedBooks = () => {
-  const [ removeBook, {err} ] = useMutation(REMOVE_BOOK);
+  const token = Auth.loggedIn() ? Auth.getToken() : null;
   const { loading, data} = useQuery(GET_ME);
+  const [ removeBook, {err} ] = useMutation(REMOVE_BOOK);
 
+  if (!token) {
+    return false;
+  }
+  
+  
   const userData = data?.me || {};
-  console.log(data);
-  console.log(userData);
+  
+  
   
 
 
@@ -34,7 +40,7 @@ const SavedBooks = () => {
     try {
       //const response = await deleteBook(bookId, token);
       const { data } = await removeBook({
-        varibales: {bookid: bookId}
+        variables: {bookId: bookId}
       })
 
       if (err) {
